@@ -3,7 +3,7 @@ import { SafeAreaView, View, Text, TextInput, Button, StyleSheet } from 'react-n
 import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
-  const [url, setUrl] = useState('http://192.168.1.100:8000');
+  const [url, setUrl] = useState('https://caulum-serenum.onrender.com');
   const [reading, setReading] = useState(null);
   const [status, setStatus] = useState('Aguardando conexão');
 
@@ -28,7 +28,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       <Text style={styles.title}>AlertaCalor</Text>
-      <Text>Endereço da API (IP do computador):</Text>
+      <Text>Endereço da API:</Text>
       <TextInput style={styles.input} value={url} onChangeText={setUrl} autoCapitalize="none" autoCorrect={false} keyboardType="url" />
       <Button title="Atualizar agora" onPress={refresh} />
       <View style={styles.card}>
