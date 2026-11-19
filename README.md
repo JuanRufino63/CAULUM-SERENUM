@@ -1,28 +1,33 @@
-# AlertaCalor — ESP32 Wokwi + API + App Mobile
+# CAULUM-SERENUM — AlertaCalor
 
-Integração acadêmica simples do projeto original https://wokwi.com/projects/480355802308334593.
+Demonstração acadêmica do projeto **AlertaCalor** (CitizenTech FIAP 2026.2), com ESP32 no Wokwi, uma API Python FastAPI no Render e aplicativo mobile React Native/Expo.
 
-Fluxo: **Wokwi ESP32 → HTTP POST → FastAPI → HTTP GET → App Expo**. Postman é só para testes.
+**Fluxo:** Wokwi ESP32 → `POST /readings` → FastAPI (Render) → `GET /readings/latest` → Expo Go.
 
-## Executar backend
+## Endereços do projeto
 
-```bash
-cd backend
-python -m pip install -r requirements.txt
-python -m uvicorn main:app --host 0.0.0.0 --port 8000
+- [Projeto original no Wokwi](https://wokwi.com/projects/480355802308334593)
+- [API pública /health](https://caulum-serenum.onrender.com/health)
+- [Última leitura /readings/latest](https://caulum-serenum.onrender.com/readings/latest)
+- URL base da API: `https://caulum-serenum.onrender.com`
+
+## 1. ESP32 no Wokwi
+
+No sketch original, mantenha o circuito e configure a variável:
+
+```cpp
+const char* API_URL = "https://caulum-serenum.onrender.com/readings";
 ```
 
-Abra `http://localhost:8000/docs` no computador. A API guarda apenas a última leitura em memória (reiniciar apaga).
+O guia [wokwi/INTEGRACAO_NO_SEU_SKETCH.md](wokwi/INTEGRACAO_NO_SEU_SKETCH.md) contém as inserções de Wi-Fi e HTTP necessárias para o sketch original. O projeto Wokwi é mantido separadamente; alterações no GitHub não são aplicadas automaticamente à simulação.
 
-## Testar Postman
+Inicie o Wokwi e confira no Monitor Serial `WiFi OK` e `API HTTP: 200` (o código 200 sozinho não substitui a confirmação da leitura em `/readings/latest`). Altere a temperatura no DHT22 e atualize a página da última leitura para confirmar.
 
-Importe `postman/Wokwi-Mobile.postman_collection.json`. Execute `Enviar leitura` e depois `Última leitura`.
+**Não é necessário ngrok:** o backend já está hospedado publicamente no Render.
 
-## Ligar Wokwi
+## 2. Aplicativo mobile (Expo Go)
 
-**Mantenha seu circuito e sketch originais.** Siga `wokwi/INTEGRACAO_NO_SEU_SKETCH.md` para adicionar WiFi e envio HTTP. Exponha a porta 8000 com um túnel HTTPS público, e coloque o endereço público em `API_URL`.
-
-## Executar mobile
+Instale Node.js LTS no computador, depois execute:
 
 ```bash
 cd mobile
@@ -30,8 +35,28 @@ npm install
 npx expo start
 ```
 
-Abra com Expo Go. No campo endereço da API, use `http://IP_DO_SEU_PC:8000` (PC e celular na mesma rede WiFi). Libere a porta 8000 no firewall se necessário. O aplicativo consulta `/readings/latest` a cada 3 segundos.
+Abra o app com o **Expo Go** no celular (o projeto usa Expo SDK 54). O endereço da API já vem preenchido com `https://caulum-serenum.onrender.com`. O aplicativo consulta `/readings/latest` a cada **3 segundos**. O campo permanece editável caso o endereço mude.
+
+Se o QR Code não abrir por bloqueio entre computador e celular, tente `npx expo start --tunnel` em uma rede que permita esse acesso.
+
+## 3. API FastAPI
+
+O backend em `backend/main.py` já está publicado no Render.
+
+Para executá-lo *localmente* (opcional):
+
+```bash
+cd backend
+python -m pip install -r requirements.txt
+python -m uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+Documentação local: `http://localhost:8000/docs`. No Render, a execução usa `uvicorn main:app --host 0.0.0.0 --port $PORT` a partir da pasta `backend`.
+
+## 4. Postman (opcional)
+
+Importe `postman/Wokwi-Mobile.postman_collection.json`. Para testar a API hospedada, mude a variável `baseUrl` da coleção para `https://caulum-serenum.onrender.com`. Execute `Enviar leitura` e depois `Última leitura`.
 
 ## Limitações
 
-Exemplo para demonstração, sem banco de dados, autenticação ou persistência. O Wokwi não recebe dados via Postman; Postman testa a API. O arquivo `wokwi/sketch.ino` herdado do starter é **genérico** e não substitui o seu projeto original. O sketch real permanece no link Wokwi.
+Projeto acadêmico de demonstração. Não há autenticação nem banco de dados: a API pública guarda somente a última leitura em memória. Reiniciar o servidor apaga os dados; um serviço gratuito do Render pode entrar em suspensão por inatividade. Os sensores no Wokwi produzem **dados simulados**, não medições reais. Não enviar informações pessoais para esta API pública.
