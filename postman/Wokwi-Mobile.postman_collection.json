@@ -6,7 +6,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8000"
+      "value": "https://caulum-serenum.onrender.com"
     }
   ],
   "item": [
@@ -35,10 +35,17 @@
       }
     },
     {
-      "name": "\u00daltima leitura",
+      "name": "Última leitura",
       "request": {
         "method": "GET",
         "url": "{{baseUrl}}/readings/latest"
+      }
+    },
+    {
+      "name": "Histórico de leituras",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/readings/history?limit=20"
       }
     }
   ]
