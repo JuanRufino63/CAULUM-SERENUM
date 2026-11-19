@@ -5,3 +5,11 @@ __pycache__/
 .env
 *.pyc
 .DS_Store
+
+# Banco de dados SQLite gerado em execucao
+backend/data/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
