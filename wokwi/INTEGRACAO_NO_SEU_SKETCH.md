@@ -14,7 +14,7 @@ Projeto original: https://wokwi.com/projects/480355802308334593
 ## 2. Acrescente às variáveis globais
 
 ```cpp
-const char* API_URL = "https://SEU-TUNEL-PUBLICO/readings";
+const char* API_URL = "https://caulum-serenum.onrender.com/readings";
 unsigned long ultimoEnvio = 0;
 const unsigned long INTERVALO_ENVIO_MS = 5000;
 ```
@@ -63,4 +63,4 @@ if (agora - ultimoEnvio >= INTERVALO_ENVIO_MS) {
 
 ## 6. Importante
 
-Wokwi no navegador precisa alcançar a API. `localhost` e `192.168.x.x` normalmente não são acessíveis diretamente pelo ESP32 simulado na nuvem. Use um túnel HTTPS público apontando para `localhost:8000` (por exemplo, ngrok), atualize `API_URL` com a URL pública + `/readings`, e execute a simulação. A URL do túnel pode mudar quando reiniciar. Não exponha esta API demonstrativa permanentemente sem autenticação.
+O Wokwi precisa alcançar uma API pública. A API deste projeto já está hospedada no Render em `https://caulum-serenum.onrender.com`, então **não é necessário ngrok**. Use a URL completa `https://caulum-serenum.onrender.com/readings` no `API_URL`. Após iniciar a simulação, confirme o `API HTTP: 200` e abra `https://caulum-serenum.onrender.com/readings/latest` para verificar a temperatura. A API não tem autenticação nem persistência e é apenas demonstrativa. O sketch que roda no projeto Wokwi não é atualizado automaticamente por alterações neste repositório.
