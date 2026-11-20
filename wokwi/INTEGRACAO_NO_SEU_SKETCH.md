@@ -14,7 +14,7 @@ Projeto original: https://wokwi.com/projects/480355802308334593
 ## 2. Acrescente às variáveis globais
 
 ```cpp
-const char* API_URL = "https://caulum-serenum.onrender.com/readings";
+const char* API_URL = "https://mandolin-coffee-alabaster.ngrok-free.dev/telemetria";
 unsigned long ultimoEnvio = 0;
 const unsigned long INTERVALO_ENVIO_MS = 5000;
 ```
@@ -29,6 +29,7 @@ void enviarLeituraAPI() {
   HTTPClient http;
   if (!http.begin(cliente, API_URL)) return;
   http.addHeader("Content-Type", "application/json");
+  http.addHeader("ngrok-skip-browser-warning", "true");
   String corpo = "{\"temperature\":" + String(tempAtual, 1) +
                  ",\"humidity\":" + String(umidadeAtual, 1) +
                  ",\"alarm_muted\":" + String(buzzerSilenciado ? "true" : "false") + "}";
@@ -63,4 +64,4 @@ if (agora - ultimoEnvio >= INTERVALO_ENVIO_MS) {
 
 ## 6. Importante
 
-O Wokwi precisa alcançar uma API pública. A API deste projeto já está hospedada no Render em `https://caulum-serenum.onrender.com`, então **não é necessário ngrok**. Use a URL completa `https://caulum-serenum.onrender.com/readings` no `API_URL`. Após iniciar a simulação, confirme o `API HTTP: 200` e abra `https://caulum-serenum.onrender.com/readings/latest` para verificar a temperatura. A API não tem autenticação nem persistência e é apenas demonstrativa. O sketch que roda no projeto Wokwi não é atualizado automaticamente por alterações neste repositório.
+O Wokwi precisa alcançar uma API pública. Mantenha o FastAPI local e o túnel ngrok em execução e use a URL completa `https://mandolin-coffee-alabaster.ngrok-free.dev/telemetria` no `API_URL`. Após iniciar a simulação, confirme `API HTTP: 200` no Monitor Serial e abra `https://mandolin-coffee-alabaster.ngrok-free.dev/leitura` para verificar a temperatura. O backend continua sendo o FastAPI local deste projeto; o ngrok apenas encaminha as requisições. O sketch que roda no projeto Wokwi não é atualizado automaticamente por alterações neste repositório.

@@ -88,6 +88,7 @@ def health():
     return {"status": "ok"}
 
 
+@app.post("/telemetria")
 @app.post("/readings")
 def add_reading(reading: Reading):
     recorded_at = datetime.now(timezone.utc).isoformat()
@@ -106,6 +107,7 @@ def add_reading(reading: Reading):
     }}
 
 
+@app.get("/leitura")
 @app.get("/readings/latest")
 def get_latest():
     with closing(open_db()) as connection:
@@ -115,6 +117,7 @@ def get_latest():
     return format_reading(row)
 
 
+@app.get("/historico")
 @app.get("/readings/history")
 def get_history(limit: int = Query(default=20, ge=1, le=100)):
     with closing(open_db()) as connection:

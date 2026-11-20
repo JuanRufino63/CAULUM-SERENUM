@@ -3,15 +3,24 @@ import { SafeAreaView, View, Text, TextInput, Button, StyleSheet } from 'react-n
 import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
-  const [url, setUrl] = useState('https://caulum-serenum.onrender.com');
+  const [url, setUrl] = useState('https://mandolin-coffee-alabaster.ngrok-free.dev');
   const [reading, setReading] = useState(null);
+  const [historyCount, setHistoryCount] = useState(0);
   const [status, setStatus] = useState('Aguardando conexão');
 
   async function refresh() {
     try {
-      const response = await fetch(`${url.replace(/\/$/, '')}/readings/latest`);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      setReading(await response.json());
+      const baseUrl = url.replace(/\/$/, '');
+      const options = { headers: { 'ngrok-skip-browser-warning': 'true' } };
+      const [readingResponse, historyResponse] = await Promise.all([
+        fetch(`${baseUrl}/leitura`, options),
+        fetch(`${baseUrl}/historico`, options),
+      ]);
+      if (!readingResponse.ok) throw new Error(`Leitura HTTP ${readingResponse.status}`);
+      if (!historyResponse.ok) throw new Error(`Histórico HTTP ${historyResponse.status}`);
+      setReading(await readingResponse.json());
+      const history = await historyResponse.json();
+      setHistoryCount(Array.isArray(history) ? history.length : 0);
       setStatus('Conectado');
     } catch (error) {
       setStatus(`Erro de conexão: ${error.message}`);
@@ -41,6 +50,7 @@ export default function App() {
         <Text style={styles.label}>Alarme</Text>
         <Text style={styles.value}>{reading?.alarm_muted ? 'Silenciado' : 'Ativo / normal'}</Text>
         <Text style={styles.small}>Última leitura: {reading?.updated_at || 'Nenhuma'}</Text>
+        <Text style={styles.small}>Leituras no histórico: {historyCount}</Text>
       </View>
       <Text style={styles.status}>{status}</Text>
       <Text style={styles.small}>Atualização automática a cada 3 segundos</Text>
